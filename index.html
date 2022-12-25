@@ -1,0 +1,1150 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>百人一首</title>
+    <link
+      href="https://use.fontawesome.com/releases/v6.2.1/css/all.css"
+      rel="stylesheet"
+    />
+
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Roboto+Condensed&display=swap");
+      * {
+        margin: 0;
+        padding: 0;
+        color: #373331;
+        border: #373331 2px;
+        background-color: #fff3e1;
+        font-family: "Times New Roman", "YuMincho", "Hiragino Mincho ProN",
+          "Yu Mincho", "MS PMincho", serif;
+        text-align: center;
+        user-select: none;
+        -webkit-user-select: none;
+        transition-duration: 0.3s;
+      }
+      h1 {
+        margin-top: 0.5em;
+        font-size: 3rem;
+        font-weight: bolder;
+        letter-spacing: 0.1em;
+      }
+      a {
+        text-decoration: none;
+      }
+      h3 {
+        margin-top: 0.5em;
+      }
+      body {
+        font-weight: bold;
+      }
+      main {
+        position: relative;
+      }
+      #incorrect {
+        font-family: "Times New Roman", "YuMincho", "Hiragino Mincho ProN",
+          "Yu Mincho", "MS PMincho", serif;
+        font-size: 1.2rem;
+        margin: 0.5em 0 0.5em;
+        transition-duration: 0.2s;
+      }
+      #kaminoku {
+        color: #373331;
+      }
+      .button {
+        padding: 0.5em;
+        margin: 1em auto 0;
+        max-width: 50vw;
+        min-width: 20em;
+        border: solid #edce45;
+      }
+      .button:hover {
+        animation: hover 0.8s forwards;
+      }
+      .settings {
+        padding: 0.5em;
+        margin: 1em auto 0;
+        max-width: 50vw;
+        min-width: 20em;
+        border: solid #edce45;
+      }
+      #buttons {
+        font-size: 1.2rem;
+      }
+      #a,
+      #b,
+      #c,
+      #d,
+      #percentage,
+      #count {
+        display: none;
+      }
+      p {
+        font-family: "Roboto Condensed", sans-serif;
+      }
+      #data {
+        margin: 0 auto;
+        margin-top: 1em;
+        width: 100%;
+        max-width: 50vw;
+        display: flex;
+        justify-content: space-between;
+        min-width: 20em;
+      }
+      #auther {
+        font-family: "Times New Roman", "YuMincho", "Hiragino Mincho ProN",
+          "Yu Mincho", "MS PMincho", serif;
+        margin: 0 auto;
+        text-align: end;
+        width: 50vw;
+      }
+      .fa-check-circle,
+      .fa-times-circle {
+        color: #37333122;
+        transition-duration: 0.2s;
+        font-size: 1.5rem;
+        visibility: hidden;
+      }
+      span {
+        display: inline-block;
+      }
+      form {
+        font-size: 1.2rem;
+        border: solid #37333122;
+        margin: 1em auto 0;
+        max-width: 50vw;
+        min-width: 20em;
+      }
+      table {
+        margin: 1em auto 1em;
+      }
+      label {
+        display: block;
+        padding: 0.5em;
+      }
+      #rangeEdit > input {
+        font-size: 1.2rem;
+      }
+      input[type="submit"] {
+        margin: 1em;
+      }
+      input[type="checkbox"] {
+        accent-color: #edce45;
+      }
+      #updateSettings {
+        min-width: 50%;
+      }
+      #codeLink {
+        font-family: "Roboto Condensed", sans-serif;
+        position: absolute;
+        bottom: 0;
+        left: 50%;
+        transform: translateX(-50%);
+      }
+      #updateSettings {
+        margin-bottom: 0;
+      }
+      details {
+        margin-bottom: 1em;
+      }
+      i {
+        font-family: "Font Awesome 5 Free";
+        font-style: normal;
+      }
+      @keyframes hover {
+        0% {
+          background-color: #3733310d;
+          transform: scale(1.024);
+        }
+        100% {
+          background-color: none;
+          transform: scale(1);
+        }
+      }
+      @media screen and (max-width: 520px) {
+        h2 {
+          font-size: 4.8vw;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+        .button:not(input[type="submit"]) {
+          box-sizing: content-box;
+          font-size: 4.2vw;
+        }
+        form {
+          min-width: 16em;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1><a onclick="window.location.reload(true);">百人一首</a></h1>
+      <h2 id="kaminoku">　</h2>
+      <p id="auther">　</p>
+      <div id="buttons">
+        <div class="button" onclick="start();" id="start">はじめる</div>
+        <div id="settings">
+          <form action="./index.html" method="GET">
+            <h3>設定</h3>
+            <table>
+              <tr>
+                <td>出題範囲</td>
+                <td>：</td>
+                <td id="range"></td>
+              </tr>
+              <tr>
+                <td>文字</td>
+                <td>：</td>
+                <td id="charset"></td>
+              </tr>
+            </table>
+            <details>
+              <summary>設定の変更</summary>
+              <label id="rangeEdit">
+                範囲
+                <input
+                  type="number"
+                  name="min"
+                  min="1"
+                  max="100"
+                  value="1"
+                  id="min"
+                />～
+                <input
+                  type="number"
+                  name="max"
+                  min="1"
+                  max="100"
+                  value="100"
+                  id="max"
+                />
+              </label>
+
+              <label>
+                <input type="checkbox" name="kana" value="true" id="kana" />
+                &nbsp;かな表示
+              </label>
+              <input
+                type="submit"
+                value="更新"
+                class="button"
+                id="updateSettings"
+              />
+            </details>
+          </form>
+        </div>
+        <div class="button" onclick="judgment(0);" id="a">し</div>
+        <div class="button" onclick="judgment(1);" id="b">も</div>
+        <div class="button" onclick="judgment(2);" id="c">の</div>
+        <div class="button" onclick="judgment(3);" id="d">く</div>
+      </div>
+      <div id="data">
+        <p id="percentage">&nbsp;&nbsp;0.00%</p>
+        <p id="count">No.1</p>
+      </div>
+      <i class="fa fa-times-circle" aria-hidden="true" id="times"></i>
+      <i class="fa fa-check-circle" aria-hidden="true" id="check"></i>
+      <p id="incorrect"></p>
+      <a
+        href="https://github.com/zsrtrgh1/HyakuninIsshu"
+        id="codeLink"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        Github
+        <i class="fa-brands fa-github"></i>
+      </a>
+    </main>
+    <script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
+    <script>
+      settings = {
+        minIndex: 1,
+        maxIndex: 100,
+        kana: false,
+      };
+      function editUrl() {
+        let url = new URL(window.location.href);
+
+        let urlParams = url.searchParams;
+        min = Number(urlParams.get("min"));
+        max = Number(urlParams.get("max"));
+        console.log(Number.isInteger(min));
+        if (min !== max && Number.isInteger(min) && Number.isInteger(max)) {
+          min < max ? (settings.minIndex = min) : (settings.maxIndex = min);
+          min < max ? (settings.maxIndex = max) : (settings.minIndex = max);
+          if (1 > settings.minIndex) {
+            settings.minIndex = 1;
+          }
+          if (100 < settings.maxIndex) {
+            settings.maxIndex = 100;
+          }
+          if (settings.maxIndex - settings.minIndex <= 5) {
+            settings.minIndex = 1;
+            settings.maxIndex = 100;
+          }
+        }
+        console.log(settings.minIndex, settings.maxIndex);
+        kana = urlParams.get("kana");
+        settings.kana = kana === "true" ? true : false;
+        console.log(settings);
+      }
+      Data = {
+        a: [],
+        b: [],
+        c: [],
+        d: [],
+        correct: [],
+        correctCount: 0,
+        count: 1,
+        percentage: 0.0,
+        index: 0,
+      };
+      let kami = document.getElementById("kaminoku");
+      let startButton = document.getElementById("start");
+      let settingsDiv = document.getElementById("settings");
+      let kanaCheck = document.getElementById("kana");
+      let input_min = document.getElementById("min");
+      let input_max = document.getElementById("max");
+      let range = document.getElementById("range");
+      let charset = document.getElementById("charset");
+      let auther = document.getElementById("auther");
+      let a = document.getElementById("a");
+      let b = document.getElementById("b");
+      let c = document.getElementById("c");
+      let d = document.getElementById("d");
+      let percentage = document.getElementById("percentage");
+      let count = document.getElementById("count");
+      let times = document.getElementById("times");
+      let check = document.getElementById("check");
+      let incorrect = document.getElementById("incorrect");
+      let codeLink = document.getElementById("codeLink");
+      lists = {
+        1: [
+          "天智天皇",
+          "秋の田のかりほの庵の苫をあらみ",
+          "わが衣手は露にぬれつつ",
+          "あきのたのかりほのいほのとまをあらみ",
+          "わがころもではつゆにぬれつつ",
+        ],
+        2: [
+          "持統天皇",
+          "春過ぎて夏来にけらし白妙の",
+          "衣干すてふ天の香具山",
+          "はるすぎてなつきにけらししろたへの",
+          "ころもほすてふあまのかぐやま",
+        ],
+        3: [
+          "柿本人麻呂",
+          "あしびきの山鳥の尾のしだり尾の",
+          "ながながし夜をひとりかも寝む",
+          "あしびきのやまどりのをのしだりをの",
+          "ながながしよをひとりかもねむ",
+        ],
+        4: [
+          "山辺赤人",
+          "田子の浦にうち出でてみれば白妙の",
+          "富士の高嶺に雪は降りつつ",
+          "たごのうらにうちいでてみればしろたへの",
+          "ふじのたかねにゆきはふりつつ",
+        ],
+        5: [
+          "猿丸大夫",
+          "奥山に紅葉踏み分け鳴く鹿の",
+          "声聞く時ぞ秋は悲しき",
+          "おくやまにもみぢふみわけなくしかの",
+          "こゑきくときぞあきはかなしき",
+        ],
+        6: [
+          "中納言家持",
+          "かささぎの渡せる橋に置く霜の",
+          "白きを見れば夜ぞ更けにける",
+          "かささぎのわたせるはしにおくしもの",
+          "しろきをみればよぞふけにける",
+        ],
+        7: [
+          "安倍仲麻呂",
+          "天の原ふりさけみれば春日なる",
+          "三笠の山に出でし月かも",
+          "あまのはらふりさけみればかすがなる",
+          "みかさのやまにいでしつきかも",
+        ],
+        8: [
+          "喜撰法師",
+          "わが庵は都の辰巳しかぞ住む",
+          "世をうぢ山と人はいふなり",
+          "わがいほはみやこのたつみしかぞすむ",
+          "よをうぢやまとひとはいふなり",
+        ],
+        9: [
+          "小野小町",
+          "花の色は移りにけりないたづらに",
+          "わが身世にふるながめせしまに",
+          "はなのいろはうつりにけりないたづらに",
+          "わがみよにふるながめせしまに",
+        ],
+        10: [
+          "蝉丸",
+          "これやこの行くも帰るも別れては",
+          "知るも知らぬも逢坂の関",
+          "これやこのゆくもかへるもわかれては",
+          "しるもしらぬもあふさかのせき",
+        ],
+        11: [
+          "参議篁",
+          "わたの原八十島かけて漕ぎ出でぬと",
+          "人にはつげよ海人の釣船",
+          "わたのはらやそしまかけてこぎいでぬと",
+          "ひとにはつげよあまのつりぶね",
+        ],
+        12: [
+          "僧正遍昭",
+          "天つ風雲の通ひ路吹きとぢよ",
+          "乙女の姿しばしとどめむ",
+          "あまつかぜくものかよひぢふきとぢよ",
+          "をとめのすがたしばしとどめむ",
+        ],
+        13: [
+          "陽成院",
+          "筑波嶺の峰より落つるみなの川",
+          "恋ぞつもりて淵となりぬる",
+          "つくばねのみねよりおつるみなのがは",
+          "こひぞつもりてふちとなりぬる",
+        ],
+        14: [
+          "河原左大臣",
+          "陸奥のしのぶもぢずりたれゆえに",
+          "乱れそめにしわれならなくに",
+          "みちのくのしのぶもぢずりたれゆゑに",
+          "みだれそめにしわれならなくに",
+        ],
+        15: [
+          "光孝天皇",
+          "君がため春の野に出でて若菜摘む",
+          "わが衣手に雪は降りつつ",
+          "きみがためはるののにいでてわかなつむ",
+          "わがころもでにゆきはふりつつ",
+        ],
+        16: [
+          "中納言行平",
+          "立ち別れいなばの山の峰に生ふる",
+          "まつとし聞かば今帰り来む",
+          "たちわかれいなばのやまのみねにおふる",
+          "まつとしきかばいまかへりこむ",
+        ],
+        17: [
+          "在原業平朝臣",
+          "ちはやぶる神代も聞かず竜田川",
+          "から紅に水くくるとは",
+          "ちはやぶるかみよもきかずたつたがは",
+          "からくれなゐにみづくくるとは",
+        ],
+        18: [
+          "藤原敏行朝臣",
+          "住の江の岸に寄る波よるさへや",
+          "夢の通ひ路人目よくらむ",
+          "すみのえのきしによるなみよるさへや",
+          "ゆめのかよひぢひとめよくらむ",
+        ],
+        19: [
+          "伊勢",
+          "難波潟短き葦のふしの間も",
+          "逢はでこの世を過ぐしてよとや",
+          "なにはがたみじかきあしのふしのまも",
+          "あはでこのよをすぐしてよとや",
+        ],
+        20: [
+          "元良親王",
+          "わびぬれば今はた同じ難波なる",
+          "身をつくしても逢はむとぞ思ふ",
+          "わびぬればいまはたおなじなにはなる",
+          "みをつくしてもあはむとぞおもふ",
+        ],
+        21: [
+          "素性法師",
+          "今来むといひしばかりに長月の",
+          "有明の月を待ち出でつるかな",
+          "いまこむといひしばかりにながつきの",
+          "ありあけのつきをまちいでつるかな",
+        ],
+        22: [
+          "文屋康秀",
+          "吹くからに秋の草木のしをるれば",
+          "むべ山風を嵐といふらむ",
+          "ふくからにあきのくさきのしをるれば",
+          "むべやまかぜをあらしといふらむ",
+        ],
+        23: [
+          "大江千里",
+          "月見れば千々にものこそ悲しけれ",
+          "わが身ひとつの秋にはあらねど",
+          "つきみればちぢにものこそかなしけれ",
+          "わがみひとつのあきにはあらねど",
+        ],
+        24: [
+          "菅家",
+          "このたびは幣もとりあへず手向山",
+          "紅葉の錦神のまにまに",
+          "このたびはぬさもとりあへずたむけやま",
+          "もみぢのにしきかみのまにまに",
+        ],
+        25: [
+          "三条右大臣",
+          "名にし負はば逢坂山のさねかずら",
+          "人に知られでくるよしもがな",
+          "なにしおはばあふさかやまのさねかづら",
+          "ひとにしられでくるよしもがな",
+        ],
+        26: [
+          "貞信公",
+          "小倉山峰のもみぢ葉心あらば",
+          "今ひとたびのみゆき待たなむ",
+          "をぐらやまみねのもみぢばこころあらば",
+          "いまひとたびのみゆきまたなむ",
+        ],
+        27: [
+          "中納言兼輔",
+          "みかの原わきて流るる泉川",
+          "いつ見きとてか恋しかるらむ",
+          "みかのはらわきてながるるいづみがは",
+          "いつみきとてかこひしかるらむ",
+        ],
+        28: [
+          "源宗于朝臣",
+          "山里は冬ぞ寂しさまさりける",
+          "人目も草もかれぬと思へば",
+          "やまざとはふゆぞさびしさまさりける",
+          "ひとめもくさもかれぬとおもへば",
+        ],
+        29: [
+          "凡河内躬恒",
+          "心あてに折らばや折らむ初霜の",
+          "置きまどはせる白菊の花",
+          "こころあてにをらばやをらむはつしもの",
+          "おきまどはせるしらぎくのはな",
+        ],
+        30: [
+          "壬生忠岑",
+          "有明のつれなく見えし別れより",
+          "暁ばかり憂きものはなし",
+          "ありあけのつれなくみえしわかれより",
+          "あかつきばかりうきものはなし",
+        ],
+        31: [
+          "坂上是則",
+          "朝ぼらけ有明の月と見るまでに",
+          "吉野の里に降れる白雪",
+          "あさぼらけありあけのつきとみるまでに",
+          " よしののさとに ふれるしらゆき",
+        ],
+        32: [
+          "春道列樹",
+          "山川に風のかけたるしがらみは",
+          "流れもあへぬ紅葉なりけり",
+          "やまがはにかぜのかけたるしがらみは",
+          "ながれもあへぬもみぢなりけり",
+        ],
+        33: [
+          "紀友則",
+          "ひさかたの光のどけき春の日に",
+          "しづ心なく花の散るらむ",
+          "ひさかたのひかりのどけきはるのひに",
+          "しづこころなくはなのちるらむ",
+        ],
+        34: [
+          "藤原興風",
+          "誰をかも知る人にせむ高砂の",
+          "松も昔の友ならなくに",
+          "たれをかもしるひとにせむたかさごの",
+          "まつもむかしのともならなくに",
+        ],
+        35: [
+          "紀貫之",
+          "人はいさ心も知らずふるさとは",
+          "花ぞ昔の香に匂ひける",
+          "ひとはいさこころもしらずふるさとは",
+          "はなぞむかしのかににほひける",
+        ],
+        36: [
+          "清原深養父",
+          "夏の夜はまだ宵ながら明けぬるを",
+          "雲のいずこに月宿るらむ",
+          "なつのよはまだよひながらあけぬるを",
+          "くものいづこにつきやどるらむ",
+        ],
+        37: [
+          "文屋朝康",
+          "白露に風の吹きしく秋の野は",
+          "つらぬきとめぬ玉ぞ散りける",
+          "しらつゆにかぜのふきしくあきののは",
+          "つらぬきとめぬたまぞちりける",
+        ],
+        38: [
+          "右近",
+          "忘らるる身をば思はず誓ひてし",
+          "人の命の惜しくもあるかな",
+          "わすらるるみをばおもはずちかひてし",
+          "ひとのいのちのをしくもあるかな",
+        ],
+        39: [
+          "参議等",
+          "浅茅生の小野の篠原忍ぶれど",
+          "あまりてなどか人の恋しき",
+          "あさぢふのをののしのはらしのぶれど",
+          "あまりてなどかひとのこひしき",
+        ],
+        40: [
+          "平兼盛",
+          "忍ぶれど色に出でにけりわが恋は",
+          "ものや思ふと人の問ふまで",
+          "しのぶれどいろにいでにけりわがこひは",
+          "ものやおもふとひとのとふまで",
+        ],
+        41: [
+          "壬生忠見",
+          "恋すてふわが名はまだき立ちにけり",
+          "人知れずこそ思ひそめしか",
+          "こひすてふわがなはまだきたちにけり",
+          "ひとしれずこそおもひそめしか",
+        ],
+        42: [
+          "清原元輔",
+          "契りきなかたみに袖をしぼりつつ",
+          "末の松山波越さじとは",
+          "ちぎりきなかたみにそでをしぼりつつ",
+          "すゑのまつやまなみこさじとは",
+        ],
+        43: [
+          "権中納言敦忠",
+          "逢ひ見ての後の心にくらぶれば",
+          "昔はものを思はざりけり",
+          "あひみてののちのこころにくらぶれば",
+          "むかしはものをおもはざりけり",
+        ],
+        44: [
+          "中納言朝忠",
+          "逢ふことの絶えてしなくはなかなかに",
+          "人をも身をも恨みざらまし",
+          "あふことのたえてしなくはなかなかに",
+          "ひとをもみをもうらみざらまし",
+        ],
+        45: [
+          "謙徳公",
+          "あはれともいふべき人は思ほえで",
+          "身のいたずらになりぬべきかな",
+          "あはれともいふべきひとはおもほえで",
+          "みのいたづらになりぬべきかな",
+        ],
+        46: [
+          "曾禰好忠",
+          "由良の戸を渡る舟人かぢをたえ",
+          "ゆくへも知らぬ恋の道かな",
+          "ゆらのとをわたるふなびとかぢをたえ",
+          "ゆくへもしらぬこひのみちかな",
+        ],
+        47: [
+          "恵慶法師",
+          "八重むぐら茂れる宿のさびしきに",
+          "人こそ見えね秋は来にけり",
+          "やへむぐらしげれるやどのさびしきに",
+          "ひとこそみえねあきはきにけり",
+        ],
+        48: [
+          "源重之",
+          "風をいたみ岩うつ波のおのれのみ",
+          "くだけてものを思ふころかな",
+          "かぜをいたみいはうつなみのおのれのみ",
+          "くだけてものをおもふころかな",
+        ],
+        49: [
+          "大中臣能宣",
+          "御垣守衛士のたく火の夜は燃え",
+          "昼は消えつつものをこそ思へ",
+          "みかきもりゑじのたくひのよるはもえ",
+          "ひるはきえつつものをこそおもへ",
+        ],
+        50: [
+          "藤原義孝",
+          "君がため惜しからざりし命さへ",
+          "長くもがなと思ひけるかな",
+          "きみがためをしからざりしいのちさへ",
+          "ながくもがなとおもひけるかな",
+        ],
+        51: [
+          "藤原実方朝臣",
+          "かくとだにえやはいぶきのさしも草",
+          "さしも知らじな燃ゆる思ひを",
+          "かくとだにえやはいぶきのさしもぐさ",
+          "さしもしらじなもゆるおもひを",
+        ],
+        52: [
+          "藤原道信朝臣",
+          "明けぬれば暮るるものとは知りながら",
+          "なほ恨めしき朝ぼらけかな",
+          "あけぬればくるるものとはしりながら",
+          "なほうらめしきあさぼらけかな",
+        ],
+        53: [
+          "右大将道綱母",
+          "嘆きつつひとり寝る夜の明くる間は",
+          "いかに久しきものとかは知る",
+          "なげきつつひとりぬるよのあくるまは",
+          "いかにひさしきものとかはしる",
+        ],
+        54: [
+          "儀同三司母",
+          "忘れじの行く末まではかたければ",
+          "今日をかぎりの命ともがな",
+          "わすれじのゆくすゑまではかたければ",
+          "けふをかぎりのいのちともがな",
+        ],
+        55: [
+          "大納言公任",
+          "滝の音は絶えて久しくなりぬれど",
+          "名こそ流れてなほ聞こえけれ",
+          "たきのおとはたえてひさしくなりぬれど",
+          "なこそながれてなほきこえけれ",
+        ],
+        56: [
+          "和泉式部",
+          "あらざらむこの世のほかの思ひ出に",
+          "今ひとたびの逢ふこともがな",
+          "あらざらむこのよのほかのおもひでに",
+          "いまひとたびのあふこともがな",
+        ],
+        57: [
+          "紫式部",
+          "めぐり逢ひて見しやそれとも分かぬ間に",
+          "雲隠れにし夜半の月かな",
+          "めぐりあひてみしやそれともわかぬまに",
+          "くもがくれにしよはのつきかな",
+        ],
+        58: [
+          "大弐三位",
+          "有馬山猪名の笹原風吹けば",
+          "いでそよ人を忘れやはする",
+          "ありまやまゐなのささはらかぜふけば",
+          "いでそよひとをわすれやはする",
+        ],
+        59: [
+          "赤染衛門",
+          "やすらはで寝なましものを小夜更けて",
+          "かたぶくまでの月を見しかな",
+          "やすらはでねなましものをさよふけて",
+          "かたぶくまでのつきをみしかな",
+        ],
+        50: [
+          "小式部内侍",
+          "大江山いく野の道の遠ければ",
+          "まだふみも見ず天の橋立",
+          "おほえやまいくののみちのとほければ",
+          "まだふみもみずあまのはしだて",
+        ],
+        61: [
+          "伊勢大輔",
+          "いにしへの奈良の都の八重桜",
+          "けふ九重に匂ひぬるかな",
+          "いにしへのならのみやこのやへざくら",
+          "けふここのへににほひぬるかな",
+        ],
+        62: [
+          "清少納言",
+          "夜をこめて鳥のそら音ははかるとも",
+          "よに逢坂の関はゆるさじ",
+          "よをこめてとりのそらねははかるとも",
+          "よにあふさかのせきはゆるさじ",
+        ],
+        63: [
+          "左京大夫道雅",
+          "今はただ思ひ絶えなむとばかりを",
+          "人づてならでいふよしもがな",
+          "いまはただおもひたえなむとばかりを",
+          "ひとづてならでいふよしもがな",
+        ],
+        64: [
+          "権中納言定頼",
+          "朝ぼらけ宇治の川霧たえだえに",
+          "あらはれわたる瀬々の網代木",
+          "あさぼらけうぢのかはぎりたえだえに",
+          "あらはれわたるせぜのあじろぎ",
+        ],
+        65: [
+          "相模",
+          "恨みわび干さぬ袖だにあるものを",
+          "恋に朽ちなむ名こそ惜しけれ",
+          "うらみわびほさぬそでだにあるものを",
+          "こひにくちなむなこそをしけれ",
+        ],
+        66: [
+          "前大僧正行尊",
+          "もろともにあはれと思え山桜",
+          "花よりほかに知る人もなし",
+          "もろともにあはれとおもへやまざくら",
+          "はなよりほかにしるひともなし",
+        ],
+        67: [
+          "周防内侍",
+          "春の夜の夢ばかりなる手枕に",
+          "かひなく立たむ名こそ惜しけれ",
+          "はるのよのゆめばかりなるたまくらに",
+          "かひなくたたむなこそをしけれ",
+        ],
+        68: [
+          "三条院",
+          "心にもあらで憂き夜にながらへば",
+          "恋しかるべき夜半の月かな",
+          "こころにもあらでうきよにながらへば",
+          "こひしかるべきよはのつきかな",
+        ],
+        69: [
+          "能因法師",
+          "嵐ふく三室の山のもみぢ葉は",
+          "竜田の川の錦なりけり",
+          "あらしふくみむろのやまのもみぢばは",
+          "たつたのかはのにしきなりけり",
+        ],
+        70: [
+          "良暹法師",
+          "寂しさに宿を立ち出でてながむれば",
+          "いづこも同じ秋の夕暮れ",
+          "さびしさにやどをたちいでてながむれば",
+          "いづこもおなじあきのゆふぐれ",
+        ],
+        71: [
+          "大納言経信",
+          "夕されば門田の稲葉おとづれて",
+          "葦のまろやに秋風ぞ吹く",
+          "ゆふさればかどたのいなばおとづれて",
+          "あしのまろやにあきかぜぞふく",
+        ],
+        72: [
+          "祐子内親王家紀伊",
+          "音に聞く高師の浜のあだ波は",
+          "かけじや袖のぬれもこそすれ",
+          "おとにきくたかしのはまのあだなみは",
+          "かけじやそでのぬれもこそすれ",
+        ],
+        73: [
+          "権中納言匡房",
+          "高砂の尾の上の桜咲きにけり",
+          "外山の霞立たずもあらなむ",
+          "たかさごのをのへのさくらさきにけり",
+          "とやまのかすみたたずもあらなむ",
+        ],
+        74: [
+          "源俊頼朝臣",
+          "憂かりける人を初瀬の山おろしよ",
+          "はげしかれとは祈らぬものを",
+          "うかりけるひとをはつせのやまおろしよ",
+          "はげしかれとはいのらぬものを",
+        ],
+        75: [
+          "藤原基俊",
+          "契りおきしさせもが露を命にて",
+          "あはれ今年の秋もいぬめり",
+          "ちぎりおきしさせもがつゆをいのちにて",
+          "あはれことしのあきもいぬめり",
+        ],
+        76: [
+          "法性寺入道前関白太政大臣",
+          "わたの原漕ぎ出でて見ればひさかたの",
+          "雲居にまがふ沖つ白波",
+          "わたのはらこぎいでてみればひさかたの",
+          "くもゐにまがふおきつしらなみ",
+        ],
+        77: [
+          "崇徳院",
+          "瀬をはやみ岩にせかるる滝川の",
+          "われても末に逢はむとぞ思ふ",
+          "せをはやみいはにせかるるたきがはの",
+          "われてもすゑにあはむとぞおもふ",
+        ],
+        78: [
+          "源兼昌",
+          "淡路島通ふ千鳥の鳴く声に",
+          "いく夜寝覚めぬ須磨の関守",
+          "あはぢしまかよふちどりのなくこゑに",
+          "いくよねざめぬすまのせきもり",
+        ],
+        79: [
+          "左京大夫顕輔",
+          "秋風にたなびく雲のたえ間より",
+          "もれ出づる月の影のさやけさ",
+          "あきかぜにたなびくくものたえまより",
+          "もれいづるつきのかげのさやけさ",
+        ],
+        80: [
+          "待賢門院堀河",
+          "ながからむ心も知らず黒髪の",
+          "乱れてけさはものをこそ思へ",
+          "ながからむこころもしらずくろかみの",
+          "みだれてけさはものをこそおもへ",
+        ],
+        81: [
+          "後徳大寺左大臣",
+          "ほととぎす鳴きつる方をながむれば",
+          "ただ有明の月ぞ残れる",
+          "ほととぎすなきつるかたをながむれば",
+          "ただありあけのつきぞのこれる",
+        ],
+        82: [
+          "道因法師",
+          "思ひわびさても命はあるものを",
+          "憂きに堪へぬは涙なりけり",
+          "おもひわびさてもいのちはあるものを",
+          "うきにたへぬはなみだなりけり",
+        ],
+        83: [
+          "皇太后宮大夫俊成",
+          "世の中よ道こそなけれ思ひ入る",
+          "山の奥にも鹿ぞ鳴くなる",
+          "よのなかよみちこそなけれおもひいる",
+          "やまのおくにもしかぞなくなる",
+        ],
+        84: [
+          "藤原清輔朝臣",
+          "ながらへばまたこのごろやしのばれむ",
+          "憂しと見し世ぞ今は恋しき",
+          "ながらへばまたこのごろやしのばれむ",
+          "うしとみしよぞいまはこひしき",
+        ],
+        85: [
+          "俊恵法師",
+          "夜もすがらもの思ふころは明けやらで",
+          "ねやのひまさへつれなかりけり",
+          "よもすがらものおもふころはあけやらで",
+          "ねやのひまさへつれなかりけり",
+        ],
+        86: [
+          "西行法師",
+          "嘆けとて月やはものを思はする",
+          "かこち顔なるわが涙かな",
+          "なげけとてつきやはものをおもはする",
+          "かこちがほなるわがなみだかな",
+        ],
+        87: [
+          "寂蓮法師",
+          "村雨の露もまだ干ぬまきの葉に",
+          "霧立ちのぼる秋の夕暮",
+          "むらさめのつゆもまだひぬまきのはに",
+          "きりたちのぼるあきのゆふぐれ",
+        ],
+        88: [
+          "皇嘉門院別当",
+          "難波江の葦のかりねのひとよゆゑ",
+          "身をつくしてや恋ひわたるべき",
+          "なにはえのあしのかりねのひとよゆゑ",
+          "みをつくしてやこひわたるべき",
+        ],
+        89: [
+          "式子内親王",
+          "玉の緒よ絶えなば絶えねながらへば",
+          "忍ぶることの弱りもぞする",
+          "たまのをよたえなばたえねながらへば",
+          "しのぶることのよわりもぞする",
+        ],
+        90: [
+          "殷富門院大輔",
+          "見せばやな雄島の海人の袖だにも",
+          "濡れにぞ濡れし色は変はらず",
+          "みせばやなをじまのあまのそでだにも",
+          "ぬれにぞぬれしいろはかはらず",
+        ],
+        91: [
+          "後京極摂政前太政大臣",
+          "きりぎりす鳴くや霜夜のさむしろに",
+          "衣かたしきひとりかも寝む",
+          "きりぎりすなくやしもよのさむしろに",
+          "ころもかたしきひとりかもねむ",
+        ],
+        92: [
+          "二条院讃岐",
+          "わが袖は潮干に見えぬ沖の石の",
+          "人こそ知らねかわく間もなし",
+          "わがそではしほひにみえぬおきのいしの",
+          "ひとこそしらねかわくまもなし",
+        ],
+        93: [
+          "鎌倉右大臣",
+          "世の中は常にもがもな渚漕ぐ",
+          "海人の小舟の綱手かなしも",
+          "よのなかはつねにもがもななぎさこぐ",
+          "あまのをぶねのつなでかなしも",
+        ],
+        94: [
+          "参議雅経",
+          "み吉野の山の秋風小夜更けて",
+          "ふるさと寒く衣うつなり",
+          "みよしののやまのあきかぜさよふけて",
+          "ふるさとさむくころもうつなり",
+        ],
+        95: [
+          "前大僧正慈円",
+          "おほけなく憂き世の民におほふかな",
+          "わが立つ杣にすみ染の袖",
+          "おほけなくうきよのたみにおほふかな",
+          "わがたつそまにすみぞめのそで",
+        ],
+        96: [
+          "入道前太政大臣",
+          "花さそふ嵐の庭の雪ならで",
+          "ふりゆくものはわが身なりけり",
+          "はなさそふあらしのにはのゆきならで",
+          "ふりゆくものはわがみなりけり",
+        ],
+        97: [
+          "権中納言定家",
+          "来ぬ人を松帆の浦の夕なぎに",
+          "焼くや藻塩の身もこがれつつ",
+          "こぬひとをまつほのうらのゆふなぎに",
+          "やくやもしほのみもこがれつつ",
+        ],
+        98: [
+          "従二位家隆",
+          "風そよぐ楢の小川の夕暮は",
+          "みそぎぞ夏のしるしなりける",
+          "かぜそよぐならのをがはのゆふぐれは",
+          "みそぎぞなつのしるしなりける",
+        ],
+        99: [
+          "後鳥羽院",
+          "人もをし人もうらめしあじきなく",
+          "世を思ふゆゑにもの思ふ身は",
+          "ひともをしひともうらめしあぢきなく",
+          "よをおもふゆゑにものおもふみは",
+        ],
+        100: [
+          "順徳院",
+          "百敷や古き軒端のしのぶにも",
+          "なほあまりある昔なりけり",
+          "ももしきやふるきのきばのしのぶにも",
+          "なほあまりあるむかしなりけり",
+        ],
+      };
+
+      function sleepByPromise(sec) {
+        return new Promise((resolve) => setTimeout(resolve, sec * 1000));
+      }
+      async function wait(sec, execute) {
+        await sleepByPromise(sec);
+        execute();
+      }
+
+      random = function (min, max) {
+        return Math.floor(Math.random() * (max - min + 1)) + min;
+      };
+      randomArray = function () {
+        var array = [];
+        for (i = 1; i <= 4; i++) {
+          while (true) {
+            var tmp = random(settings.minIndex, settings.maxIndex);
+            if (!array.includes(tmp)) {
+              array.push(tmp);
+              break;
+            }
+          }
+        }
+        return array;
+      };
+
+      const shuffle = ([...array]) => {
+        for (let i = array.length - 1; i >= 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [array[i], array[j]] = [array[j], array[i]];
+        }
+        return array;
+      };
+      chooseIndex = function (numbers) {
+        correct = numbers[0];
+        numbers = shuffle(numbers);
+        return {
+          array: numbers,
+          correct: correct,
+        };
+      };
+      function generateQuiz() {
+        numbers = chooseIndex(randomArray());
+        correctIndex = numbers["correct"];
+        array = numbers["array"];
+
+        Data.a = lists[array[0]];
+        Data.b = lists[array[1]];
+        Data.c = lists[array[2]];
+        Data.d = lists[array[3]];
+        Data.correct = lists[correctIndex];
+        Data.numbers = numbers;
+
+        console.log(Data.a, Data.b, Data.c, Data.d, numbers);
+        console.log(correctIndex);
+        console.log(array);
+      }
+      function update(params) {
+        var index;
+        settings.kana ? (index = 3) : (index = 1);
+        kami.innerHTML = Data.correct[index];
+        auther.innerHTML = Data.correct[0];
+        a.innerHTML = Data.a[index + 1];
+        b.innerHTML = Data.b[index + 1];
+        c.innerHTML = Data.c[index + 1];
+        d.innerHTML = Data.d[index + 1];
+      }
+      start = function () {
+        startButton.remove();
+        settingsDiv.remove();
+        codeLink.remove();
+        a.style.display =
+          b.style.display =
+          c.style.display =
+          d.style.display =
+          percentage.style.display =
+          count.style.display =
+            "block";
+        times.style.visibility = check.style.visibility = "visible";
+        update();
+      };
+
+      updateIconColor = function (boolean) {
+        if (boolean) {
+          check.style.color = "#5CED92";
+          Data.correctCount++;
+          incorrect.innerHTML = "";
+        } else {
+          times.style.color = "#ED4139";
+          incorrectHTML = `<span>${Data.correct[1]}</span> <span>${Data.correct[2]}</span>`;
+          incorrect.innerHTML = incorrectHTML;
+        }
+      };
+
+      updateData = function () {
+        Data.percentage = (Data.correctCount / Data.count) * 100;
+        Data.count++;
+        count.innerHTML = `No.${Data.count}`;
+        formatPercentage = `${Data.percentage.toFixed(2)}`;
+        formatPercentage = formatPercentage.padStart(6, "     ");
+        percentage.innerHTML = `${formatPercentage}%`;
+      };
+
+      function judgment(params) {
+        updateIconColor(Data.numbers.correct === Data.numbers.array[params]);
+        wait(0.4, () => {
+          check.style.color = times.style.color = "#37333122";
+        });
+        generateQuiz();
+        update();
+        updateData();
+      }
+      window.onload = function onLoad() {
+        editUrl();
+        range.innerHTML = `${settings.minIndex}～${settings.maxIndex}`;
+        charset.innerHTML = settings.kana === false ? "漢字" : "平仮名";
+        kanaCheck.checked = settings.kana;
+        input_min.value = `${settings.minIndex}`;
+        input_max.value = `${settings.maxIndex}`;
+        generateQuiz();
+      };
+    </script>
+  </body>
+</html>
