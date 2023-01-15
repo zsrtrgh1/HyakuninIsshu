@@ -1,4 +1,6 @@
+<a href="https://zsrtrgh1.github.io/HyakuninIsshu">
 <img src="ogpImage.jpg" style="width:50%;object-fit: cover;"/>
+</a>
 
 # HyakuninIsshu
 百人一首を四択でランダムに出題するサイトです。<br>
