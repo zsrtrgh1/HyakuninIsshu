@@ -1,5 +1,6 @@
+<img src="ogpImage.jpg" style="width:50%;object-fit: cover;"/>
+
 # HyakuninIsshu
-![百人一首](/ogpImage.jpg) 
 百人一首を四択でランダムに出題するサイトです。<br>
 ブラウザによっては、句を読み上げてくれます。<br>
 出題範囲を指定できるので効率よく覚えることができます。
